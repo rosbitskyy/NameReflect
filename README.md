@@ -3,7 +3,7 @@
 - [ua] Схиляння Українських Імен Прізвище По-батькові по відмінках
 - [ru] Склонение Украинских Имен Фамилий Отчеств по падежам
 
-- [ua] Перероблена на JAVA код з бібліотеки PHP5 NameCaseLib (від seagullua)
+- [ua] Перероблена на JAVA код з бібліотеки PHP5 NameCaseLib (від Andriy Chaika)
 - [ru] Переписана на JAVA с библиотеки NameCaseLib для PHP5 
 (https://github.com/rosbitskyy/NameCaseLib)
 
