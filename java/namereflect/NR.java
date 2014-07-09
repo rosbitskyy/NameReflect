@@ -1,4 +1,4 @@
-/* Copyright 2012 Rosbitskyy Ruslan.
+/* Copyright 2012 Rosbitskyy Ruslan (r@rrs.pp.ua).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
