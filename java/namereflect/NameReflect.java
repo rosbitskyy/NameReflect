@@ -15,9 +15,6 @@
 
 package namereflect.trunk.java.namereflect;
 
-
-package ua.pp.rrs.common.namereflect;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
