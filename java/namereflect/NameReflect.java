@@ -15,6 +15,9 @@
 
 package namereflect.trunk.java.namereflect;
 
+
+package ua.pp.rrs.common.namereflect;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +25,12 @@ import java.util.List;
 /**
  * User: Ruslan Rosbitskyy
  * Date: 08.07.14 15:07
- * Project: test-case
- * Developed by  R.Rosbitskyy
+ * Project: tutarius
+ * Developed by D.Volk, R.Rosbitskyy, V. Polishchuk
  */
 public class NameReflect {
+
+    private NameReflect that = this;
 
     public final static int UANAZYVNYI = 0; // кто що
     public final static int UARODOVYI = 1; // кого чого
@@ -40,13 +45,13 @@ public class NameReflect {
      *
      * @var string
      */
-    private String vowels = "аеиоуіїєюя";
+    private String vowels = "аеиоуійїєюя";
     /**
      * Список согласных украинского языка
      *
      * @var string
      */
-    private String consonant = "бвгджзйклмнпрстфхцчшщ";
+    private String consonant = "бвгджзклмнпрстфхцчшщ";
     /**
      * Українські шиплячі приголосні
      *
@@ -71,6 +76,37 @@ public class NameReflect {
      * @var string
      */
     private String gubni = "мвпбф";
+    // Іменники, що не відмінюються
+    private String[] nouns = new String[]{
+            "він", "вона", "вони", "воно", "її", "його", "ними", "ним", "нею", "їми", "разом", "часом",
+            "та", "і", "від", "ні", "не", "ми", "чи", "що", "так", "який", "якій", "то", "про", "з",
+            "їм", "на", "того", "нього", "неї", "ніж", "отож", "у", "в", "або", "бо", "й", "є",
+            "але", "до", "до", "над", "під", "за", "перед", "біля", "те", "се",
+            //
+            "однак", "проте", "тільки", "зате", "хоч", "між", "тим", "якби", "майже", "якраз", "як-не-як",
+            // Прислівники часу
+            "коли", "відколи", "довго", "доки", "тепер", "колись", "віддавна", "щороку", "завжди",
+            "учора", "понині", "одвіку", "звідки", "угорі", "вниз", "здалеку",
+            "чому", "кого", "кому", "ким", "чим", "через", "якої", "якоі", "кого", "нащо", "через",
+            // слова що не відмінюються - незмінювані іменникі
+            "журі", "меню", "кіно", "радіо", "табу", "бюро", "таксі",
+            "амплуа", "боа", "інтерв’ю", "меню", "рагу", "токіо", "авто",
+            "кольрабі", "парі", "чилі", "перу", "аташе", "комюніке", "пенсне", "гейне", "дідро", "золя",
+            // Не є вставними
+            "ніби", "нібито", "немовби", "все-таки", "адже", "от", "тільки", "принаймні", "навіть",
+            // питально-відносні (де, куди, як)
+            "де", "куди", "як",
+            // вказівні (так, там, тут, сюди, туди, тоді)
+            "так", "там", "тут", "сюди", "туди", "тоді", "той", "ті", "цьому", "тому",
+            // заперечні (ніде, нікуди, ніколи, ніяк)
+            "ніде", "нікуди", "ніколи", "ніяк",
+            // неозначені (десь, кудись, колись)
+            "десь", "кудись", "колись", "тощо",
+            // висловлювання
+            "мабуть", "можливо", "напевно", "безперечно", "по-перше",
+            "лише", "тобто", "якимось",
+            "прав", "сетак", "сєтак"
+    };
 
     /**
      * Массив содержит елементы типа Word. Это все слова которые нужно обработать и просклонять
@@ -109,16 +145,16 @@ public class NameReflect {
 
     public NameReflect(String surname, String firstname, String middlename, Boolean isMan) {
         this.words.add(new Word(surname)
-                .setGender(isMan ? Word.MAN : Word.WOMAN)
-                .setType(Word.TYPE_SURNAME)
+                        .setGender(isMan ? Word.MAN : Word.WOMAN)
+                        .setType(Word.TYPE_SURNAME)
         );
         this.words.add(new Word(firstname)
-                .setGender(isMan ? Word.MAN : Word.WOMAN)
-                .setType(Word.TYPE_FIRSTNAME)
+                        .setGender(isMan ? Word.MAN : Word.WOMAN)
+                        .setType(Word.TYPE_FIRSTNAME)
         );
         this.words.add(new Word(middlename)
-                .setGender(isMan ? Word.MAN : Word.WOMAN)
-                .setType(Word.TYPE_FATHERNAME)
+                        .setGender(isMan ? Word.MAN : Word.WOMAN)
+                        .setType(Word.TYPE_FATHERNAME)
         );
         this.setGender(isMan ? Word.MAN : Word.WOMAN);
 
@@ -127,13 +163,13 @@ public class NameReflect {
 
     public NameReflect(String surname, String firstname, String middlename) {
         this.words.add(new Word(surname)
-                .setType(Word.TYPE_SURNAME)
+                        .setType(Word.TYPE_SURNAME)
         );
         this.words.add(new Word(firstname)
-                .setType(Word.TYPE_FIRSTNAME)
+                        .setType(Word.TYPE_FIRSTNAME)
         );
         this.words.add(new Word(middlename)
-                .setType(Word.TYPE_FATHERNAME)
+                        .setType(Word.TYPE_FATHERNAME)
         );
         for (Word word : this.getWords()) {
             this.detectSex(word);
@@ -149,7 +185,7 @@ public class NameReflect {
      */
     public NameReflect(String nameParts) {
         if (nameParts == null || nameParts.length() == 0)
-            nameParts = "Розбицький Руслан Станіславович";
+            nameParts = "Иванов Иван Иванович";
         String[] names = nameParts.split(" ");
         int man = 0, wo = 0;
         int fatherGender = 0;
@@ -157,21 +193,48 @@ public class NameReflect {
             Word tmpName = new Word(name);
             detectWordType(tmpName);
             if (tmpName.getType() == Word.TYPE_FATHERNAME) fatherGender = tmpName.getGender();
-            detectSex(tmpName);
-            this.getWords().add(tmpName);
+            this.detectSex(tmpName).getWords().add(tmpName);
             man += tmpName.getGender() == Word.MAN ? 1 : 0;
             wo += tmpName.getGender() == Word.WOMAN ? 1 : 0;
         }
         if (fatherGender > 0) this.setGender(fatherGender);
         else if (man > wo) this.setGender(Word.MAN);
-        else this.setGender(Word.WOMAN);
+        else if (man == 0 && wo > 0) this.setGender(Word.WOMAN);
 
         this.wordCases();
+    }
+
+    // перевірка на назывный відмінок?
+    // якщо ні - пропускаємо відмінки та залішаемо слово як є
+    protected boolean isNominative(Word word) {
+        boolean rv = false;
+        // закінчення називного видмінку
+        if (word.isUpperCase()) return false;
+        this.workingWord = word.toString();
+        if (this.workingWord.length() == 1) return false;
+        rv = (this.neshyplyachi + "ь").contains(this.last(1))
+                || (this.shyplyachi + "ь").contains(this.last(1));
+        rv = (!rv) && (this.neshyplyachi).contains(this.last(2, 1)) && "ияа".contains(this.last(1));
+        rv = (!rv) && Arrays.asList(new String[]{
+                "на", "ія", "во"
+        }).contains(this.last(2));
+        // Іменники, що не відмінюються
+        rv = !Arrays.asList(nouns).contains(word.toString());
+        //виключення, про всяк випадок
+        if (rv) {
+            String osnova = this.getOsnova(word.toString());
+            String last = word.toString().replace(osnova, "");
+            rv = !Arrays.asList(new String[]{
+                    "ого", "еві", "єві", "ові", "ом", "ому", "им", "их", "і", "ї", "ми", "у", "ій", "ої"
+            }).contains(last.equals("") ? "0" : last);
+        }
+        return rv;
     }
 
     // вырезаем последние символы слова сконца
     protected String last(int length) {
         //Сколько букв нужно вырезать
+        if (this.workingWord.length() - length < 1) return "";
         return this.workingWord.substring(this.workingWord.length() - length);
     }
 
@@ -251,7 +314,9 @@ public class NameReflect {
         float man = 0; //Мужчина
         float woman = 0; //Женщина
 
-        String[] ends = new String[]{"ов", "ин", "ев", "єв", "ін", "їн", "ий", "їв", "ів", "ой", "ей"};
+        String[] ends = new String[]{"ов", "ин", "ев", "єв", "ін", "іл", "їн", "ий", "їв", "ів", "ой", "ей"
+                , "ир", "ль", "ан", "ор", "ук", "ус", "ян"
+        };
         if (Arrays.asList(ends).contains(this.last(2))) {
             man += 0.4;
         }
@@ -284,17 +349,25 @@ public class NameReflect {
             man += 0.9;
         }
 
-        if (this.inNames(this.workingWord, new String[]{"Петро", "Микола"})) {
+        if (this.inNames(this.workingWord, new String[]{"Петро", "Микола", "Ян", "Кім"})) {
             man += 30;
         }
 
-        if (Arrays.asList(new String[]{"он", "ов", "ав", "ам", "ол", "ан", "рд", "мп", "ко", "ло", "ро"})
-                .contains(this.last(2))) {
+        if (Arrays.asList(new String[]{
+                "он", "ов", "ав", "ам", "ол", "ан", "рд", "мп", "ко", "ло", "ир", "ль", "ів",
+                "ро", "ор", "им", "др", "ій", "ян", "ік", "їк", "ид", "ур", "ат", "от", "нд"
+        }).contains(this.last(2))) {
             man += 0.5;
         }
 
-        if (Arrays.asList(new String[]{"бов", "нка", "яра", "ила", "опа"})
-                .contains(this.last(3))) {
+        if (Arrays.asList(new String[]{
+                "бов", "нка", "яра", "ила", "опа", "еса", "ель", "єта", "ета", "ква", "дра"
+        }).contains(this.last(3))) {
+            woman += 0.5;
+        }
+        if (Arrays.asList(new String[]{
+                "на", "ья", "ая"
+        }).contains(this.last(2))) {
             woman += 0.5;
         }
 
@@ -308,11 +381,6 @@ public class NameReflect {
 
         if ("дь".equals(this.last(2))) {
             woman += 0.1;
-        }
-
-        if (Arrays.asList(new String[]{"ель", "бов"})
-                .contains(this.last(3))) {
-            woman += 0.4;
         }
 
         word.setGender((man > woman) ? Word.MAN : Word.WOMAN);
@@ -344,6 +412,9 @@ public class NameReflect {
      */
     protected NameReflect detectWordType(Word word) {
         String namepart = word.getWord();
+        if (word.isUpperCase()) { // абривиатура
+            return this;
+        }
         this.setWorkingWord(namepart);
 
         //Считаем вероятность
@@ -366,14 +437,14 @@ public class NameReflect {
 
         //Исключения
         if (this.inNames(namepart,
-                new String[]{"Лев", "Гаїна", "Афіна", "Антоніна", "Ангеліна", "Альвіна",
+                new String[]{"Ян", "Лев", "Гаїна", "Афіна", "Антоніна", "Ангеліна", "Альвіна",
                         "Альбіна", "Аліна", "Павло", "Олесь", "Микола", "Мая", "Англеліна", "Елькін"})) {
             first += 10;
         }
 
         //похоже на фамилию
         if (Arrays.asList(new String[]{"ов", "ін", "ев", "єв", "ий", "ин", "ой", "ко", "ук", "як", "ца",
-                "их", "ик", "ун", "ок", "ша", "ая", "га", "єк", "аш", "ив", "юк",
+                "их", "ик", "ун", "ок", "ша", "ая", "га", "єк", "аш", "ив", "юк", "ій",
                 "ус", "це", "ак", "бр", "яр", "іл", "ів", "ич", "сь", "ей", "нс",
                 "яс", "ер", "ай", "ян", "ах", "ць", "ющ", "іс", "ач", "уб", "ох",
                 "юх", "ут", "ча", "ул", "вк", "зь", "уц", "їн", "де", "уз"}).contains(this.last(2))) {
@@ -484,6 +555,7 @@ public class NameReflect {
      */
     private String getOsnova(String word) {
         String osnova = word;
+        if (osnova.length() == 1) return osnova;
         //Ріжемо слово поки не зустрінемо приголосний
         while ((this.vowels + 'ь').lastIndexOf(osnova.substring(osnova.length() - 1)) > -1) {
             osnova = osnova.substring(0, osnova.length() - 1);
@@ -514,10 +586,7 @@ public class NameReflect {
     }
 
     public String getCaseList(int uaVidminokId) {
-        String res = "";
-        List<String> list = getCaseList();
-        res = list.get(uaVidminokId);
-        return res;
+        return getCaseList().get(uaVidminokId);
     }
 
     /**
@@ -540,16 +609,18 @@ public class NameReflect {
     private NameReflect wordCase(Word word) {
         this.setWorkingWord(word.getWord());
         List<String> result = null;
-        if (word.getType() == Word.TYPE_FIRSTNAME) {
-            result = firstName(word.getGender());
-        } else if (word.getType() == Word.TYPE_SURNAME) {
-            result = surName(word.getGender());
-        } else if (word.getType() == Word.TYPE_FATHERNAME) {
-            result = fatherName(word.getGender());
+        if (isNominative(word)) {
+            if (word.getType() == Word.TYPE_FIRSTNAME) {
+                result = firstName(word.getGender());
+            } else if (word.getType() == Word.TYPE_SURNAME) {
+                result = surName(word.getGender());
+            } else if (word.getType() == Word.TYPE_FATHERNAME) {
+                result = fatherName(word.getGender());
+            }
         }
         if (result != null) {
             word.setNameCases(result);
-        } else {
+        } else { // абрівіатура чи слово не в називному відмінку
             List<String> s = new ArrayList<String>();
             for (int i = 0; i < 7; i++) s.add(word.getWord());
             word.setNameCases(s);
@@ -653,40 +724,43 @@ public class NameReflect {
      * змінюються на з, ц, с: Ольга - Ользі, Палажка - Палажці, Солоха - Солосі.</li>
      * - Примітка 2. У жіночих іменах типу Одарка, Параска в родовому відмінку множини
      * в кінці основи між приголосними з"являється звук о: Одарок, Парасок. </li>
+     * - нотаріус - нотаріусеві
      *
      * @return List<String> - якщо було задіяно правило з переліку, null - якщо правило не знайдено
      */
     protected List<String> manRule1() {
-        //Предпоследний символ
-        String beforeLast = this.last(2, 1);
-
-        //Останні літера або а
-        if (this.last(1).equals("а")) {
-            String[] xyu = new String[]{
-                    beforeLast + "и",
-                    this.inverseGKH(beforeLast) + "і",
-                    beforeLast + "у",
-                    beforeLast + "ою",
-                    this.inverseGKH(beforeLast) + "і",
-                    beforeLast + "о"
-            };
-            return this.wordForms(this.workingWord, xyu, 2);
-        }
-        //Остання літера я
-        else if (this.last(1).equals("я")) {
-            //Перед останньою літерою стоїть я
-            if (beforeLast.equals("і")) {
-                return this.wordForms(this.workingWord, new String[]{"ї", "ї", "ю", "єю", "ї", "є"}, 1);
-            } else {
-                return this.wordForms(this.workingWord, new String[]{
-                        beforeLast + "і",
+        try {
+            //Предпоследний символ
+            String beforeLast = this.last(2, 1);
+            //Останні літера або а
+            if (this.last(1).equals("а")) {
+                String[] xyu = new String[]{
+                        beforeLast + "и",
                         this.inverseGKH(beforeLast) + "і",
-                        beforeLast + "ю",
-                        beforeLast + "ею",
+                        beforeLast + "у",
+                        beforeLast + "ою",
                         this.inverseGKH(beforeLast) + "і",
-                        beforeLast + "е"
-                }, 2);
+                        beforeLast + "о"
+                };
+                return this.wordForms(this.workingWord, xyu, 2);
             }
+            //Остання літера я
+            else if (this.last(1).equals("я")) {
+                //Перед останньою літерою стоїть я
+                if (beforeLast.equals("і")) {
+                    return this.wordForms(this.workingWord, new String[]{"ї", "ї", "ю", "єю", "ї", "є"}, 1);
+                } else {
+                    return this.wordForms(this.workingWord, new String[]{
+                            beforeLast + "і",
+                            this.inverseGKH(beforeLast) + "і",
+                            beforeLast + "ю",
+                            beforeLast + "ею",
+                            this.inverseGKH(beforeLast) + "і",
+                            beforeLast + "е"
+                    }, 2);
+                }
+            }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -698,16 +772,19 @@ public class NameReflect {
      * @return List<String> - якщо було задіяно правило з переліку, null - якщо правило не знайдено
      */
     protected List<String> manRule2() {
-        if (this.last(1).equals("р")) {
-            if (this.inNames(this.workingWord, new String[]{"Ігор", "Лазар"})) {
-                return this.wordForms(this.workingWord, new String[]{"я", "еві", "я", "ем", "еві", "е"}, 0);
-            } else {
-                String osnova = this.workingWord;
-                if (osnova.substring(osnova.length() - 2, 1).equals("і")) {
-                    osnova = osnova.substring(0, osnova.length() - 2) + "о" + osnova.substring(osnova.length() - 1, 1);
+        try {
+            if (this.last(1).equals("р")) {
+                if (this.inNames(this.workingWord, new String[]{"Ігор", "Лазар"})) {
+                    return this.wordForms(this.workingWord, new String[]{"я", "еві", "я", "ем", "еві", "е"}, 0);
+                } else {
+                    String osnova = this.workingWord;
+                    if (osnova.substring(osnova.length() - 2, 1).equals("і")) {
+                        osnova = osnova.substring(0, osnova.length() - 2) + "о" + osnova.substring(osnova.length() - 1, 1);
+                    }
+                    return this.wordForms(osnova, new String[]{"а", "ові", "а", "ом", "ові", "е"}, 0);
                 }
-                return this.wordForms(osnova, new String[]{"а", "ові", "а", "ом", "ові", "е"}, 0);
             }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -719,84 +796,119 @@ public class NameReflect {
      * @return List<String> - якщо було задіяно правило з переліку, null - якщо правило не знайдено
      */
     protected List<String> manRule3() {
-        //Предпоследний символ
-        String beforeLast = this.last(2, 1);
+        try {
+            //Предпоследний символ
+            String beforeLast = this.last(2, 1);
 
-        if ((this.consonant + "оь").contains(this.last(1))) {
-            int group = this.detect2ndWithdrawal(this.workingWord);
-            String osnova = this.getOsnova(this.workingWord);
-            //В іменах типу Антін, Нестір, Нечипір, Прокіп, Сидір, Тиміш, Федір голосний і виступає тільки в
-            //називному відмінку, у непрямих - о: Антона, Антонові
-            //Чергування і -» о всередині
-            String osLast = osnova.substring(osnova.length() - 1);
-            if (!osLast.equals("й") && osnova.substring(osnova.length() - 2, osnova.length() - 2).equals("і")
-                    && !(Arrays.asList(new String[]{"світ", "цвіт"})
-                    .contains(osnova.substring(osnova.length() - 4, 4)))
-                    && !this.inNames(this.workingWord, new String[]{"Гліб"})) {
-                osnova = osnova.substring(0, osnova.length() - 2)
-                        + "о" + osnova.substring(osnova.length() - 1);
-            }
+            if ((this.consonant + "оь").contains(this.last(1))) {
+                int group = this.detect2ndWithdrawal(this.workingWord);
+                String osnova = this.getOsnova(this.workingWord);
+                //В іменах типу Антін, Нестір, Нечипір, Прокіп, Сидір, Тиміш, Федір голосний і виступає тільки в
+                //називному відмінку, у непрямих - о: Антона, Антонові
+                //Чергування і -» о всередині
+                String osLast = osnova.substring(osnova.length() - 1);
+                try {
+                    if (!osLast.equals("й") && osnova.substring(osnova.length() - 2, osnova.length() - 1).equals("і")
+                            && !(Arrays.asList(new String[]{"світ", "цвіт"})
+                            .contains(osnova.substring(osnova.length() - 4, 4)))
+                            && !this.inNames(this.workingWord, new String[]{"гліб"})) {
+                        osnova = osnova.substring(0, osnova.length() - 2)
+                                + "о" + osnova.substring(osnova.length() - 1);
+                    }
+                } catch (Exception ee) {
+                }
 
-            //Випадання букви е при відмінюванні слів типу Орел
-            if (osnova.substring(0, 1).equals("о")
-                    && this.firstLastVowel(osnova, this.vowels + "гк").equals("е")
-                    && this.last(2).equals("сь")) {
-                int delim = osnova.indexOf("е");
-                osnova = osnova.substring(0, delim) +
-                        osnova.substring(delim + 1, osnova.length() - delim);
-            }
+                //Випадання букви е при відмінюванні слів типу Орел
+                if (osnova.substring(0, 1).equals("о")
+                        && this.firstLastVowel(osnova, this.vowels + "гк").equals("е")
+                        && this.last(2).equals("сь")) {
+                    int delim = osnova.lastIndexOf("е");
+                    osnova = osnova.substring(0, delim) +
+                            osnova.substring(delim + 1, osnova.length() - delim);
+                }
+                // випадання букви е - Бобер (бобру)
+                else if (that.last(3).equals("бер")) {
+                    int delim = osnova.lastIndexOf("е");
+                    osnova = osnova.substring(0, delim) +
+                            osnova.substring(delim + 1, osnova.length() - delim);
+                }
 
+                // кого - кому - кого - ким - на кому - кличний
+                if (group == 1) {
+                    //Тверда група
+                    //Слова що закінчуються на ок
+                    if (this.last(2).equals("ок") && !this.last(3).equals("оок")) {
+                        return this.wordForms(this.workingWord, new String[]{"ка", "кові", "ка", "ком", "кові", "че"}, 2);
+                    }
+                    //Російські прізвища на ов, ев, єв
+                    else if (Arrays.asList(new String[]{"ов", "ев", "єв"}).contains(this.last(2))
+                            && !this.inNames(this.workingWord, new String[]{"лев", "остромов"})) {
+                        return this.wordForms(osnova, new String[]{osLast + "а", osLast + "у", osLast + "а", osLast + "им",
+                                osLast + "у", this.inverse2(osLast) + "е"}, 1);
+                    } else if ("іль".equals(this.last(3))) {
+                        return this.wordForms(this.workingWord, new String[]{"я", "ю", "я", "ем", "ю", "е"});
+                    }
+                    // волк, пуліщук, бобер
+                    else if (Arrays.asList(new String[]{"к"}).contains(this.last(1))
+                            && (that.vowels.contains(this.last(2, 1)) || that.neshyplyachi.contains(this.last(2, 1)))) {
+                        return this.wordForms(this.workingWord, new String[]{"а", "у", "а", "ом", "у", ""});
+                    }
+                    // бобер(бобр(у)
+                    else if (Arrays.asList(new String[]{"р"}).contains(this.last(1))
+                            && (that.neshyplyachi.contains(this.last(2, 1)) || that.neshyplyachi.contains(this.last(2, 1)))) {
+                        return this.wordForms(this.workingWord, new String[]{"а", "у", "а", "ом", "у", ""});
+                    }
+                    //Російські прізвища на ін, іл (відділ)
+                    else if (Arrays.asList(new String[]{"ін", "іл"}).contains(this.last(2))) {
+                        return this.wordForms(this.workingWord, new String[]{"а", "у", "а", "ом", "у", "е"});
+                    }
+                    // виключаємо
+                    else if (osnova.equals("договор")) {
+                        return this.wordForms(osnova, new String[]{"у", "у", "а", "ом", "і", "е"});
+                    } else if (osnova.equals("нотаріус")) {
+                        return this.wordForms(osnova, new String[]{"а", "у", "а", "ом", "і", "е"});
+                    }
+                    // інші
+                    else {
+                        return this.wordForms(osnova, new String[]{osLast + "а", osLast + "ові", osLast + "а",
+                                osLast + "ом", osLast + "ові", this.inverse2(osLast) + "е"}, 1);
+                    }
 
-            if (group == 1) {
-                //Тверда група
-                //Слова що закінчуються на ок
-                if (this.last(2).equals("ок") && !this.last(3).equals("оок")) {
-                    return this.wordForms(this.workingWord, new String[]{"ка", "кові", "ка", "ком", "кові", "че"}, 2);
                 }
-                //Російські прізвища на ов, ев, єв
-                else if (Arrays.asList(new String[]{"ов", "ев", "єв"}).contains(this.last(2))
-                        && !this.inNames(this.workingWord, new String[]{"Лев", "Остромов"})) {
-                    return this.wordForms(osnova, new String[]{osLast + "а", osLast + "у", osLast + "а", osLast + "им",
-                            osLast + "у", this.inverse2(osLast) + "е"}, 1);
+                if (group == 2) {
+                    //Мішана група
+                    return this.wordForms(osnova, new String[]{"а", "еві", "а", "ем", "еві", "е"});
                 }
-                //Російські прізвища на ін
-                else if ("ін".equals(this.last(2))) {
-                    return this.wordForms(this.workingWord, new String[]{"а", "у", "а", "ом", "у", "е"});
-                } else {
-                    return this.wordForms(osnova, new String[]{osLast + "а", osLast + "ові", osLast + "а",
-                            osLast + "ом", osLast + "ові", this.inverse2(osLast) + "е"}, 1);
-                }
-            }
-            if (group == 2) {
-                //Мішана група
-                return this.wordForms(osnova, new String[]{"а", "еві", "а", "ем", "еві", "е"});
-            }
-            if (group == 3) {
-                //М’яка група
-                //Соловей
-                if (this.last(2).equals("ей") && this.gubni.contains(this.last(3, 1))) {
-                    osnova = this.workingWord.substring(0, this.workingWord.length() - 2) + "’";
-                    return this.wordForms(osnova, new String[]{"я", "єві", "я", "єм", "єві", "ю"});
-                } else if (this.last(1).equals("й") || beforeLast.equals("і")) {
-                    return this.wordForms(this.workingWord, new String[]{"я", "єві", "я", "єм", "єві", "ю"}, 1);
-                }
-                //Швець
-                else if (this.workingWord.equals("швець")) {
-                    return this.wordForms(this.workingWord, new String[]{"евця", "евцеві", "евця",
-                            "евцем", "евцеві", "евцю"}, 4);
-                }
-                //Слова що закінчуються на ець
-                else if (this.last(3).equals("ець")) {
-                    return this.wordForms(this.workingWord, new String[]{"ця", "цеві", "ця", "цем", "цеві", "цю"}, 3);
-                }
-                //Слова що закінчуються на єць яць
-                else if (Arrays.asList(new String[]{"єць", "яць"}).contains(this.last(3))) {
-                    return this.wordForms(this.workingWord, new String[]{"йця", "йцеві", "йця",
-                            "йцем", "йцеві", "йцю"}, 3);
-                } else {
-                    return this.wordForms(osnova, new String[]{"я", "еві", "я", "ем", "еві", "ю"});
+                if (group == 3) {
+                    //М’яка група
+                    //Соловей
+                    if (this.last(2).equals("ей") && this.gubni.contains(this.last(3, 1))) {
+                        osnova = this.workingWord.substring(0, this.workingWord.length() - 2) + "’";
+                        return this.wordForms(osnova, new String[]{"я", "єві", "я", "єм", "єві", "ю"});
+                    } else if (this.last(1).equals("й") || beforeLast.equals("і")) {
+                        return this.wordForms(this.workingWord, new String[]{"я", "єві", "я", "єм", "єві", "ю"}, 1);
+                    } else if ("іль".equals(this.last(3))) {
+                        return this.wordForms(this.workingWord, new String[]{"я", "ю", "я", "ем", "ю", "е"}, 1);
+                    }
+                    //Швець
+                    else if (this.workingWord.equals("швець")) {
+                        return this.wordForms(this.workingWord, new String[]{"евця", "евцеві", "евця",
+                                "евцем", "евцеві", "евцю"}, 4);
+                    }
+                    //Слова що закінчуються на ець
+                    else if (this.last(3).equals("ець")) {
+                        return this.wordForms(this.workingWord, new String[]{"ця", "цеві", "ця", "цем", "цеві", "цю"}, 3);
+                    }
+                    //Слова що закінчуються на єць яць
+                    else if (Arrays.asList(new String[]{"єць", "яць"}).contains(this.last(3))) {
+                        return this.wordForms(this.workingWord, new String[]{"йця", "йцеві", "йця",
+                                "йцем", "йцеві", "йцю"}, 3);
+                    } else {
+                        return this.wordForms(osnova, new String[]{"я", "еві", "я", "ем", "еві", "ю"});
+                    }
                 }
             }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -807,8 +919,11 @@ public class NameReflect {
      * @return boolean true - якщо було задіяно правило з переліку, false - якщо правило не знайдено
      */
     protected List<String> manRule4() {
-        if (this.last(1).equals("і")) {
-            return this.wordForms(this.workingWord, new String[]{"их", "им", "их", "ими", "их", "і"}, 1);
+        try {
+            if (this.last(1).equals("і")) {
+                return this.wordForms(this.workingWord, new String[]{"их", "им", "их", "ими", "их", "і"}, 1);
+            }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -819,8 +934,11 @@ public class NameReflect {
      * @return boolean true - якщо було задіяно правило з переліку, false - якщо правило не знайдено
      */
     protected List<String> manRule5() {
-        if (Arrays.asList(new String[]{"ий", "ой"}).contains(this.last(2))) {
-            return this.wordForms(this.workingWord, new String[]{"ого", "ому", "ого", "им", "ому", "ий"}, 2);
+        try {
+            if (Arrays.asList(new String[]{"ий", "ой"}).contains(this.last(2))) {
+                return this.wordForms(this.workingWord, new String[]{"ого", "ому", "ого", "им", "ому", "ий"}, 2);
+            }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -837,37 +955,59 @@ public class NameReflect {
      * @return boolean true - якщо було задіяно правило з переліку, false - якщо правило не знайдено
      */
     protected List<String> womanRule1() {
-        //Предпоследний символ
-        String beforeLast = this.last(2, 1);
+        try {
+            //Предпоследний символ
+            String beforeLast = this.last(2, 1);
 
-        //Якщо закінчується на ніга -» нога
-        if (this.last(4).equals("ніга")) {
-            String osnova = this.workingWord.substring(0, this.workingWord.length() - 3) + "о";
-            return this.wordForms(osnova, new String[]{"ги", "зі", "гу", "гою", "зі", "го"});
-        }
+            //Якщо закінчується на ніга -» нога
+            if (this.last(4).equals("ніга")) {
+                String osnova = this.workingWord.substring(0, this.workingWord.length() - 3) + "о";
+                return this.wordForms(osnova, new String[]{"ги", "зі", "гу", "гою", "зі", "го"});
+            }
 
-        //Останні літера або а
-        else if (this.last(1).equals("а")) {
-            return this.wordForms(this.workingWord, new String[]{
-                    beforeLast + "и",
-                    this.inverseGKH(beforeLast) + "і",
-                    beforeLast + "у", beforeLast + "ою",
-                    this.inverseGKH(beforeLast) + "і",
-                    beforeLast + "о"}
-                    , 2);
-        }
-        //Остання літера я
-        else if (this.last(1).equals("я")) {
-            if (this.vowels.contains(beforeLast)) {
-                return this.wordForms(this.workingWord, new String[]{"ї", "ї", "ю", "єю", "ї", "є"}, 1);
-            } else {
+//            public final static int UANAZYVNYI = 0; // кто що
+//            public final static int UARODOVYI = 1; // кого чого
+//            public final static int UADAVALNYI = 2; // кому чому
+//            public final static int UAZNAHIDNYI = 3; // кого що
+//            public final static int UAORUDNYI = 4; // ким чим
+//            public final static int UAMISZEVYI = 5; // на кому на чому
+//            public final static int UAKLYCHNYI = 6; // кого що
+
+            // льна
+            else if (this.last(3).equals("ьна")) {
                 return this.wordForms(this.workingWord, new String[]{
-                        beforeLast + "і",
-                        this.inverseGKH(beforeLast) + "і",
-                        beforeLast + "ю", beforeLast + "ею",
-                        this.inverseGKH(beforeLast) + "і", beforeLast + "е"}
+                        beforeLast + "ої",
+                        this.inverseGKH(beforeLast) + "ій",
+                        beforeLast + "у", beforeLast + "у",
+                        this.inverseGKH(beforeLast) + "ій",
+                        beforeLast + "а"}
                         , 2);
             }
+
+            //Останні літера або а
+            else if (this.last(1).equals("а")) {
+                return this.wordForms(this.workingWord, new String[]{
+                        beforeLast + "и",
+                        this.inverseGKH(beforeLast) + "і",
+                        beforeLast + "у", beforeLast + "ою",
+                        this.inverseGKH(beforeLast) + "і",
+                        beforeLast + "о"}
+                        , 2);
+            }
+            //Остання літера я
+            else if (this.last(1).equals("я")) {
+                if (this.vowels.contains(beforeLast)) {
+                    return this.wordForms(this.workingWord, new String[]{"ї", "ї", "ю", "єю", "ї", "є"}, 1);
+                } else {
+                    return this.wordForms(this.workingWord, new String[]{
+                            beforeLast + "і",
+                            this.inverseGKH(beforeLast) + "і",
+                            beforeLast + "ю", beforeLast + "ею",
+                            this.inverseGKH(beforeLast) + "і", beforeLast + "е"}
+                            , 2);
+                }
+            }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -879,29 +1019,32 @@ public class NameReflect {
      * @return boolean true - якщо було задіяно правило з переліку, false - якщо правило не знайдено
      */
     protected List<String> womanRule2() {
-        if ((this.consonant + "ь").contains(this.last(1))) {
-            String osnova = this.getOsnova(this.workingWord);
-            String apostrof = "";
-            String duplicate = "";
-            String osLast = osnova.substring(osnova.length() - 1, 1);
-            String osBeforeLast = osnova.substring(osnova.length() - 2, 1);
+        try {
+            if ((this.consonant + "ь").contains(this.last(1))) {
+                String osnova = this.getOsnova(this.workingWord);
+                String apostrof = "";
+                String duplicate = "";
+                String osLast = osnova.substring(osnova.length() - 1, 1);
+                String osBeforeLast = osnova.substring(osnova.length() - 2, 1);
 
-            //Чи треба ставити апостроф
-            if ("мвпбф".contains(osLast) && this.vowels.contains(osBeforeLast)) {
-                apostrof = "’";
-            }
+                //Чи треба ставити апостроф
+                if ("мвпбф".contains(osLast) && this.vowels.contains(osBeforeLast)) {
+                    apostrof = "’";
+                }
 
-            //Чи треба подвоювати
-            if ("дтзсцлн".contains(osLast)) {
-                duplicate = osLast;
-            }
+                //Чи треба подвоювати
+                if ("дтзсцлн".contains(osLast)) {
+                    duplicate = osLast;
+                }
 
-            //Відмінюємо
-            if (this.last(1).equals("ь")) {
-                return this.wordForms(osnova, new String[]{"і", "і", "ь", duplicate + apostrof + "ю", "і", "е"});
-            } else {
-                return this.wordForms(osnova, new String[]{"і", "і", "", duplicate + apostrof + "ю", "і", "е"});
+                //Відмінюємо
+                if (this.last(1).equals("ь")) {
+                    return this.wordForms(osnova, new String[]{"і", "і", "ь", duplicate + apostrof + "ю", "і", "е"});
+                } else {
+                    return this.wordForms(osnova, new String[]{"і", "і", "", duplicate + apostrof + "ю", "і", "е"});
+                }
             }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -912,25 +1055,28 @@ public class NameReflect {
      * @return boolean true - якщо було задіяно правило з переліку, false - якщо правило не знайдено
      */
     protected List<String> womanRule3() {
-        //Предпоследний символ
-        String beforeLast = this.last(2, 1);
+        try {
+            //Предпоследний символ
+            String beforeLast = this.last(2, 1);
 
-        //Донская
-        if (this.last(2).equals("ая")) {
-            return this.wordForms(this.workingWord, new String[]{"ої", "ій", "ую", "ою", "ій", "ая"}, 2);
+            //Донская
+            if (this.last(2).equals("ая")) {
+                return this.wordForms(this.workingWord, new String[]{"ої", "ій", "ую", "ою", "ій", "ая"}, 2);
+            }
+
+            //Ті що на ськ
+            if (this.last(1).equals("а")
+                    && Arrays.asList(new String[]{"ов", "ев", "єв", "ив", "ьк", "тн", "рн", "ин"})
+                    .contains(this.last(3, 2))) {
+                return this.wordForms(this.workingWord, new String[]{
+                        beforeLast + "ої",
+                        beforeLast + "ій", beforeLast + "у",
+                        beforeLast + "ою", beforeLast + "ій",
+                        beforeLast + "о"
+                }, 2);
+            }
+        } catch (Exception e) {
         }
-
-        //Ті що на ськ
-        if (this.last(1).equals("а")
-                && Arrays.asList(new String[]{"ов", "ев", "єв", "ив", "ьк", "тн", "рн", "ин"})
-                .contains(this.last(3, 2))) {
-            return this.wordForms(this.workingWord, new String[]{
-                    beforeLast + "ої",
-                    beforeLast + "ій", beforeLast + "у",
-                    beforeLast + "ою", beforeLast + "ій", beforeLast + "о"}
-                    , 2);
-        }
-
         return null;
     }
 
